@@ -26,11 +26,13 @@ function App() {
       setLoading(true);
       setError(null);
       
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      
       const [bioRes, projectsRes, skillsRes, socialLinksRes] = await Promise.all([
-        fetch('http://localhost:5000/api/bio'),
-        fetch('http://localhost:5000/api/projects'),
-        fetch('http://localhost:5000/api/skills'),
-        fetch('http://localhost:5000/api/social-links')
+        fetch(`${apiUrl}/api/bio`),
+        fetch(`${apiUrl}/api/projects`),
+        fetch(`${apiUrl}/api/skills`),
+        fetch(`${apiUrl}/api/social-links`)
       ]);
 
       console.log('Bio response status:', bioRes.status);
