@@ -586,7 +586,7 @@ const AdminDashboard = ({ onNavigate }) => {
                   type="url"
                   value={bio.image_url}
                   onChange={(e) => setBio({ ...bio, image_url: e.target.value })}
-                  className="w-60 px-4 py-2 rounded-lg border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-32 px-4 py-2 rounded-lg border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="https://example.com/your-photo.jpg"
                 />
               </div>
