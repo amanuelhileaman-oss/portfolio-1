@@ -40,10 +40,11 @@ router.put('/', verifyToken, async (req, res) => {
       return res.status(400).json({ error: 'CV link must be a valid URL' });
     }
     if (image_url && typeof image_url !== 'string') {
-      return res.status(400).json({ error: 'Image URL must be a string' });
+      return res.status(400).json({ error: 'Image path must be a string' });
     }
-    if (image_url && !image_url.match(/^https?:\/\/.+/)) {
-      return res.status(400).json({ error: 'Image URL must be a valid URL' });
+    // Accept both URLs and file paths
+    if (image_url && !image_url.match(/^(https?:\/\/|\.\/|\/).+/)) {
+      return res.status(400).json({ error: 'Image path must be a valid URL or file path' });
     }
     
     // Sanitize inputs
