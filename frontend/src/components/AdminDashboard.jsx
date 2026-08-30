@@ -74,15 +74,16 @@ const AdminDashboard = ({ onNavigate }) => {
 
   const fetchAllData = async () => {
     try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       const headers = { 'Authorization': `Bearer ${token}` };
       
       const [bioRes, projectsRes, skillsRes, contactsRes, socialLinksRes, credentialsRes] = await Promise.all([
-        fetch('http://localhost:5000/api/bio'),
-        fetch('http://localhost:5000/api/projects'),
-        fetch('http://localhost:5000/api/skills'),
-        fetch('http://localhost:5000/api/contact', { headers }),
-        fetch('http://localhost:5000/api/social-links'),
-        fetch('http://localhost:5000/api/auth/credentials', { headers })
+        fetch(`${apiUrl}/api/bio`),
+        fetch(`${apiUrl}/api/projects`),
+        fetch(`${apiUrl}/api/skills`),
+        fetch(`${apiUrl}/api/contact`, { headers }),
+        fetch(`${apiUrl}/api/social-links`),
+        fetch(`${apiUrl}/api/auth/credentials`, { headers })
       ]);
 
       const bioData = await bioRes.json();
@@ -129,7 +130,8 @@ const AdminDashboard = ({ onNavigate }) => {
     
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -162,7 +164,8 @@ const AdminDashboard = ({ onNavigate }) => {
 
   const updateBio = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/bio', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/bio`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -180,7 +183,8 @@ const AdminDashboard = ({ onNavigate }) => {
 
   const addProject = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/projects', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/projects`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -205,7 +209,8 @@ const AdminDashboard = ({ onNavigate }) => {
 
   const deleteProject = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/projects/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/projects/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -220,7 +225,8 @@ const AdminDashboard = ({ onNavigate }) => {
 
   const addSkill = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/skills', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/skills`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -249,7 +255,8 @@ const AdminDashboard = ({ onNavigate }) => {
 
   const deleteSkill = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/skills/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/skills/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -264,7 +271,8 @@ const AdminDashboard = ({ onNavigate }) => {
 
   const addSocialLink = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/social-links', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/social-links`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -287,7 +295,8 @@ const AdminDashboard = ({ onNavigate }) => {
 
   const updateSocialLink = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/social-links/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/social-links/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -310,7 +319,8 @@ const AdminDashboard = ({ onNavigate }) => {
 
   const deleteSocialLink = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/social-links/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/social-links/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -325,7 +335,8 @@ const AdminDashboard = ({ onNavigate }) => {
 
   const updateCredentials = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/credentials', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/auth/credentials`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -356,7 +367,8 @@ const AdminDashboard = ({ onNavigate }) => {
     }
     
     try {
-      const response = await fetch('http://localhost:5000/api/auth/credentials', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/auth/credentials`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -394,7 +406,8 @@ const AdminDashboard = ({ onNavigate }) => {
 
   const deleteContact = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/contact/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/contact/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
