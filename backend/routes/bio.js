@@ -42,9 +42,9 @@ router.put('/', verifyToken, async (req, res) => {
     if (image_url && typeof image_url !== 'string') {
       return res.status(400).json({ error: 'Image path must be a string' });
     }
-    // Accept both URLs and file paths
-    if (image_url && !image_url.match(/^(https?:\/\/|\.\/|\/).+/)) {
-      return res.status(400).json({ error: 'Image path must be a valid URL or file path' });
+    // Accept any path format (URLs, Windows, Unix, relative, etc.)
+    if (image_url && image_url.trim().length === 0) {
+      return res.status(400).json({ error: 'Image path cannot be empty' });
     }
     
     // Sanitize inputs
