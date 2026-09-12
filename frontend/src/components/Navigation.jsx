@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Menu, X, Home, Code, Award, Mail, LayoutDashboard } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Home, Code, Award, Mail, LayoutDashboard, Sparkles } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
+import { Button } from './ui/button';
 
 const Navigation = ({ onNavigate, currentSection }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,97 +20,136 @@ const Navigation = ({ onNavigate, currentSection }) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm z-50 border-b border-gray-200 dark:border-gray-700">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-14 sm:h-16">
-          <div className="flex items-center gap-2">
-            <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              AH
+    <motion.nav 
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed top-0 left-0 right-0 bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-sm z-50 border-b border-border/70"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo / Brand */}
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => handleNav('home')}
+          >
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-md shadow-blue-500/20">
+              <span className="text-white font-bold text-base tracking-tight">AH</span>
+            </div>
+            <span className="hidden sm:inline-block font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Amanuel
             </span>
-          </div>
+          </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-4 sm:gap-6">
+          <div className="hidden md:flex items-center gap-1.5 lg:gap-2">
             {navItems.map((item) => {
               const Icon = item.icon;
+              const isActive = currentSection === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => handleNav(item.id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all hover:scale-105 ${
-                    currentSection === item.id
-                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  className={`relative flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
+                    isActive
+                      ? 'text-primary font-semibold'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/60'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className="text-sm sm:text-base">{item.label}</span>
+                  <Icon className="w-4 h-4 relative z-10" />
+                  <span className="relative z-10">{item.label}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeNavPill"
+                      className="absolute inset-0 bg-primary/10 dark:bg-primary/20 rounded-lg border border-primary/25"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
                 </button>
               );
             })}
-            <button
+
+            <div className="h-5 w-[1px] bg-border mx-1.5" />
+
+            {/* Admin button */}
+            <Button
+              variant={currentSection === 'admin' ? 'secondary' : 'ghost'}
+              size="sm"
               onClick={() => handleNav('admin')}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all hover:scale-105 ${
+              className={`gap-1.5 ${
                 currentSection === 'admin'
-                  ? 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  ? 'border border-purple-500/40 text-purple-600 dark:text-purple-400 bg-purple-500/10'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              <LayoutDashboard className="w-4 h-4" />
-              <span className="text-sm sm:text-base">Admin</span>
-            </button>
+              <LayoutDashboard className="w-4 h-4 text-purple-500" />
+              <span>Admin</span>
+            </Button>
+
             <ThemeToggle />
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-2">
             <ThemeToggle />
-            <button
+            <Button
+              variant="outline"
+              size="icon"
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="h-9 w-9 rounded-lg"
+              aria-label="Toggle navigation menu"
             >
-              {isOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
-            </button>
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 animate-slide-down">
-          <div className="px-2 py-2 space-y-1">
+      {/* Mobile Navigation Drawer */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl px-4 py-3 space-y-1.5 overflow-hidden flex flex-col items-start"
+          >
             {navItems.map((item) => {
               const Icon = item.icon;
+              const isActive = currentSection === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => handleNav(item.id)}
-                  className={`w-48 flex items-center gap-2 px-2 py-1.5 rounded-md transition-all hover:scale-105 ${
-                    currentSection === item.id
-                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  className={`w-48 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    isActive
+                      ? 'bg-primary/10 text-primary font-semibold border border-primary/20'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
-                  <span className="text-sm">{item.label}</span>
+                  <span>{item.label}</span>
                 </button>
               );
             })}
             <button
               onClick={() => handleNav('admin')}
-              className={`w-48 flex items-center gap-2 px-2 py-1.5 rounded-md transition-all hover:scale-105 ${
+              className={`w-48 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 currentSection === 'admin'
-                  ? 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  ? 'bg-purple-500/15 text-purple-600 dark:text-purple-400 font-semibold border border-purple-500/30'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-accent'
               }`}
             >
-              <LayoutDashboard className="w-4 h-4" />
-              <span className="text-sm">Admin</span>
+              <LayoutDashboard className="w-4 h-4 text-purple-500" />
+              <span>Admin</span>
             </button>
-          </div>
-        </div>
-      )}
-    </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
   );
 };
 

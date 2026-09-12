@@ -1,6 +1,12 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Award, ChevronDown, Sparkles } from 'lucide-react';
+import { Card, CardContent } from './ui/card';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Progress } from './ui/progress';
 
-const Skills = ({ skills }) => {
+const Skills = ({ skills = [] }) => {
   const [selectedMainCategory, setSelectedMainCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [expandedCategories, setExpandedCategories] = useState({});
@@ -43,10 +49,25 @@ const Skills = ({ skills }) => {
     }
   };
 
+  const getProficiencyLabel = (proficiency) => {
+    switch (proficiency) {
+      case 5:
+        return 'Expert';
+      case 4:
+        return 'Advanced';
+      case 3:
+        return 'Intermediate';
+      case 2:
+        return 'Novice';
+      default:
+        return 'Beginner';
+    }
+  };
+
   const toggleCategory = (category) => {
-    setExpandedCategories(prev => ({
+    setExpandedCategories((prev) => ({
       ...prev,
-      [category]: !prev[category]
+      [category]: !prev[category],
     }));
   };
 
@@ -66,169 +87,241 @@ const Skills = ({ skills }) => {
     }
     return {
       [selectedMainCategory]: {
-        [selectedSubCategory]: skillsByCategory[selectedMainCategory]?.[selectedSubCategory]
-      }
+        [selectedSubCategory]: skillsByCategory[selectedMainCategory]?.[selectedSubCategory],
+      },
     };
   };
 
   const filteredSkills = getFilteredSkills();
 
   return (
-    <section id="skills" className="py-12 sm:py-20 px-4 bg-gray-50 dark:bg-gray-800">
+    <section id="skills" className="py-16 sm:py-24 px-4 bg-muted/30 dark:bg-muted/10 relative overflow-hidden">
+      {/* Decorative ambient gradients */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute bottom-10 left-10 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent animate-slide-up">
-          Skills & Expertise
-        </h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-10 sm:mb-14"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-3">
+            <Award className="w-3.5 h-3.5" />
+            <span>Tech Stack & Tools</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+            Skills & Expertise
+          </h2>
+          <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-lg mx-auto">
+            A comprehensive overview of my technical proficiencies and competencies.
+          </p>
+        </motion.div>
 
         {/* Category Filter Buttons */}
         <div className="flex flex-wrap gap-2 mb-8 justify-center">
-          <button
-            onClick={() => { setSelectedMainCategory(null); setSelectedSubCategory(null); }}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              !selectedMainCategory
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-            }`}
+          <Button
+            variant={!selectedMainCategory ? "default" : "outline"}
+            size="sm"
+            onClick={() => {
+              setSelectedMainCategory(null);
+              setSelectedSubCategory(null);
+            }}
+            className="rounded-full text-xs sm:text-sm font-medium transition-all"
           >
             All Skills
-          </button>
+          </Button>
           {Object.keys(skillsByCategory).map((category) => (
-            <button
+            <Button
               key={category}
+              variant={selectedMainCategory === category ? "default" : "outline"}
+              size="sm"
               onClick={() => selectMainCategory(category)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                selectedMainCategory === category
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-              }`}
+              className="rounded-full text-xs sm:text-sm font-medium transition-all"
             >
               {category}
-            </button>
+            </Button>
           ))}
         </div>
 
-        {/* Sub-category Filter (only show when main category is selected) */}
+        {/* Sub-category Filter */}
         {selectedMainCategory && skillsByCategory[selectedMainCategory] && (
-          <div className="flex flex-wrap gap-2 mb-6 justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-wrap gap-2 mb-8 justify-center"
+          >
             {Object.keys(skillsByCategory[selectedMainCategory]).map((subCategory) => {
               if (subCategory === '_uncategorized') return null;
               return (
-                <button
+                <Button
                   key={subCategory}
+                  variant={selectedSubCategory === subCategory ? "gradient" : "secondary"}
+                  size="sm"
                   onClick={() => selectSubCategory(subCategory)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                    selectedSubCategory === subCategory
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-                  }`}
+                  className="rounded-full text-xs h-7 px-3 font-medium transition-all"
                 >
                   {subCategory}
-                </button>
+                </Button>
               );
             })}
-          </div>
+          </motion.div>
         )}
 
         {Object.entries(filteredSkills).map(([mainCategory, subCategories], mainIndex) => (
-          <div key={mainCategory} className="mb-8 sm:mb-12 animate-slide-up" style={{ animationDelay: `${mainIndex * 0.1}s` }}>
-            <div 
-              className="flex items-center justify-between cursor-pointer mb-4 sm:mb-6"
+          <motion.div
+            key={mainCategory}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: mainIndex * 0.08 }}
+            className="mb-10 sm:mb-14"
+          >
+            <div
+              className="flex items-center justify-between cursor-pointer mb-5 p-2 rounded-lg hover:bg-muted/50 transition-colors group select-none"
               onClick={() => toggleCategory(mainCategory)}
             >
-              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                {mainCategory}
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  ({Object.values(subCategories).flat().length})
-                </span>
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-3">
+                <span>{mainCategory}</span>
+                <Badge variant="secondary" className="text-xs">
+                  {Object.values(subCategories).flat().length}
+                </Badge>
               </h3>
-              <span className={`transform transition-transform ${expandedCategories[mainCategory] ? 'rotate-180' : ''}`}>
-                ▼
-              </span>
+              <div
+                className={`p-1.5 rounded-md text-muted-foreground group-hover:text-foreground group-hover:bg-accent transition-all transform ${
+                  expandedCategories[mainCategory] ? 'rotate-180' : ''
+                }`}
+              >
+                <ChevronDown className="w-5 h-5" />
+              </div>
             </div>
-            
-            {expandedCategories[mainCategory] !== false && (
-              <>
-                {Object.entries(subCategories).map(([subCategory, categorySkills], subIndex) => {
-                  if (subCategory === '_uncategorized') {
-                    // Skills without sub-category
+
+            <AnimatePresence initial={false}>
+              {expandedCategories[mainCategory] !== false && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {Object.entries(subCategories).map(([subCategory, categorySkills]) => {
+                    if (subCategory === '_uncategorized') {
+                      return (
+                        <div
+                          key="uncategorized"
+                          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6"
+                        >
+                          {categorySkills.map((skill) => (
+                            <motion.div
+                              key={skill.id}
+                              whileHover={{ y: -4, scale: 1.02 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <Card
+                                className="h-full border-border/70 hover:border-primary/60 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 bg-card/85 backdrop-blur-sm group"
+                              >
+                                <CardContent className="p-5">
+                                  <div className="flex justify-between items-center mb-3">
+                                    <h4 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
+                                      {skill.name}
+                                    </h4>
+                                    <div className="flex items-center gap-2">
+                                      <Badge variant="outline" className="text-[11px] py-0 px-2 group-hover:border-primary/40">
+                                        {getProficiencyLabel(skill.proficiency)}
+                                      </Badge>
+                                      <span className="text-xs font-mono font-medium text-muted-foreground">
+                                        {skill.proficiency}/5
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <div className="w-full bg-secondary/80 rounded-full h-2 overflow-hidden">
+                                    <motion.div
+                                      initial={{ width: 0 }}
+                                      whileInView={{ width: `${(skill.proficiency / 5) * 100}%` }}
+                                      viewport={{ once: true }}
+                                      transition={{ duration: 0.8, ease: "easeOut" }}
+                                      className={`${getProficiencyColor(skill.proficiency)} h-2 rounded-full group-hover:shadow-[0_0_12px_rgba(59,130,246,0.5)] transition-shadow duration-300`}
+                                    />
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </motion.div>
+                          ))}
+                        </div>
+                      );
+                    }
+
                     return (
-                      <div key="uncategorized" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                        {categorySkills.map((skill, skillIndex) => (
-                          <div
-                            key={skill.id}
-                            className="bg-white dark:bg-gray-700 rounded-lg p-4 sm:p-6 shadow-md hover:shadow-lg transition-all"
-                            style={{ animationDelay: `${mainIndex * 0.1 + skillIndex * 0.05}s` }}
-                          >
-                            <div className="flex justify-between items-center mb-2 sm:mb-3">
-                              <h4 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white">
-                                {skill.name}
-                              </h4>
-                              <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                                {skill.proficiency}/5
-                              </span>
-                            </div>
-                            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 sm:h-2.5">
-                              <div
-                                className={`${getProficiencyColor(skill.proficiency)} h-2 sm:h-2.5 rounded-full transition-all duration-500 ease-out`}
-                                style={{ width: `${(skill.proficiency / 5) * 100}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        ))}
+                      <div key={subCategory} className="mb-6">
+                        <div
+                          className="text-base sm:text-lg font-semibold mb-3.5 text-foreground/90 pl-3 border-l-4 border-primary/80 cursor-pointer hover:text-primary transition-colors inline-flex items-center gap-2"
+                          onClick={() => selectSubCategory(subCategory)}
+                        >
+                          <span>{subCategory}</span>
+                          <span className="text-xs text-muted-foreground font-normal">
+                            ({categorySkills.length})
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                          {categorySkills.map((skill) => (
+                            <motion.div
+                              key={skill.id}
+                              whileHover={{ y: -4, scale: 1.02 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <Card
+                                className="h-full border-border/70 hover:border-primary/60 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 bg-card/85 backdrop-blur-sm group"
+                              >
+                                <CardContent className="p-5">
+                                  <div className="flex justify-between items-center mb-3">
+                                    <h4 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
+                                      {skill.name}
+                                    </h4>
+                                    <div className="flex items-center gap-2">
+                                      <Badge variant="outline" className="text-[11px] py-0 px-2 group-hover:border-primary/40">
+                                        {getProficiencyLabel(skill.proficiency)}
+                                      </Badge>
+                                      <span className="text-xs font-mono font-medium text-muted-foreground">
+                                        {skill.proficiency}/5
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <div className="w-full bg-secondary/80 rounded-full h-2 overflow-hidden">
+                                    <motion.div
+                                      initial={{ width: 0 }}
+                                      whileInView={{ width: `${(skill.proficiency / 5) * 100}%` }}
+                                      viewport={{ once: true }}
+                                      transition={{ duration: 0.8, ease: "easeOut" }}
+                                      className={`${getProficiencyColor(skill.proficiency)} h-2 rounded-full group-hover:shadow-[0_0_12px_rgba(59,130,246,0.5)] transition-shadow duration-300`}
+                                    />
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </motion.div>
+                          ))}
+                        </div>
                       </div>
                     );
-                  }
-                  
-                  // Skills with sub-category
-                  return (
-                    <div key={subCategory} className="mb-6">
-                      <h4 
-                        className="text-lg font-medium mb-3 sm:mb-4 text-gray-800 dark:text-gray-200 pl-3 border-l-4 border-blue-500 cursor-pointer hover:border-blue-600 transition-colors"
-                        onClick={() => selectSubCategory(subCategory)}
-                      >
-                        {subCategory}
-                        <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
-                          ({categorySkills.length})
-                        </span>
-                      </h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                        {categorySkills.map((skill, skillIndex) => (
-                          <div
-                            key={skill.id}
-                            className="bg-white dark:bg-gray-700 rounded-lg p-4 sm:p-6 shadow-md hover:shadow-lg transition-all"
-                            style={{ animationDelay: `${mainIndex * 0.1 + subIndex * 0.05 + skillIndex * 0.03}s` }}
-                          >
-                            <div className="flex justify-between items-center mb-2 sm:mb-3">
-                              <h4 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white">
-                                {skill.name}
-                              </h4>
-                              <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                                {skill.proficiency}/5
-                              </span>
-                            </div>
-                            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 sm:h-2.5">
-                              <div
-                                className={`${getProficiencyColor(skill.proficiency)} h-2 sm:h-2.5 rounded-full transition-all duration-500 ease-out`}
-                                style={{ width: `${(skill.proficiency / 5) * 100}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </>
-            )}
-          </div>
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         ))}
 
         {skills.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-16 px-4 bg-muted/20 border border-dashed border-border rounded-2xl"
+          >
+            <Award className="w-12 h-12 text-muted-foreground/40 mx-auto mb-3" />
+            <p className="text-muted-foreground text-base sm:text-lg font-medium">
               No skills added yet.
             </p>
-          </div>
+          </motion.div>
         )}
       </div>
     </section>
