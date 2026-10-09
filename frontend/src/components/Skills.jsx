@@ -218,6 +218,10 @@ const Skills = ({ skills = [] }) => {
                               key={skill.id}
                               whileHover={{ y: -4, scale: 1.02 }}
                               transition={{ duration: 0.2 }}
+                              drag
+                              dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+                              dragElastic={0.15}
+                              whileDrag={{ scale: 1.05, zIndex: 50, cursor: "grabbing" }}
                             >
                               <Card
                                 className="h-full border-border/70 hover:border-primary/60 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 bg-card/85 backdrop-blur-sm group"
@@ -270,6 +274,10 @@ const Skills = ({ skills = [] }) => {
                               key={skill.id}
                               whileHover={{ y: -4, scale: 1.02 }}
                               transition={{ duration: 0.2 }}
+                              drag
+                              dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+                              dragElastic={0.15}
+                              whileDrag={{ scale: 1.05, zIndex: 50, cursor: "grabbing" }}
                             >
                               <Card
                                 className="h-full border-border/70 hover:border-primary/60 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 bg-card/85 backdrop-blur-sm group"

@@ -1,6 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import Hero from '../Hero';
+
+vi.mock('../ui/IridescentSphere', () => ({
+  IridescentSphere: () => <div data-testid="mock-sphere" />
+}));
 
 describe('Hero Component', () => {
   const mockBio = {

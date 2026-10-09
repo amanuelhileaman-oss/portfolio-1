@@ -374,6 +374,10 @@ const Contact = ({ socialLinks = [] }) => {
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.15, y: -2 }}
                     whileTap={{ scale: 0.95 }}
+                    drag
+                    dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+                    dragElastic={0.2}
+                    whileDrag={{ scale: 1.2, zIndex: 50, cursor: "grabbing" }}
                     className="p-3 rounded-xl border border-border/80 bg-card hover:border-primary/50 text-foreground shadow-sm transition-colors duration-200 cursor-pointer flex items-center justify-center"
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor = hoverColor;

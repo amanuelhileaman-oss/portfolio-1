@@ -40,6 +40,10 @@ const Projects = ({ projects = [] }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.5, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              drag
+              dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+              dragElastic={0.15}
+              whileDrag={{ scale: 1.05, zIndex: 50, cursor: "grabbing" }}
             >
               <TiltCard className="h-full">
                 <Card className="h-full flex flex-col overflow-hidden border-border/80 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 bg-card/85 backdrop-blur-sm group">
